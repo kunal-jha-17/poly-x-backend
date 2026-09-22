@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "CUSTOMER_NOT_FOUND",
+    "message": "Customer C-9999 was not found.",
+    "details": null
+  }
+}

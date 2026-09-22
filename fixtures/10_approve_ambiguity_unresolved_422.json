@@ -1,0 +1,12 @@
+{
+  "error": {
+    "code": "AMBIGUITY_UNRESOLVED",
+    "message": "2 question(s) still need an answer before this policy can be approved.",
+    "details": {
+      "missing_ambiguity_ids": [
+        "A1",
+        "A2"
+      ]
+    }
+  }
+}

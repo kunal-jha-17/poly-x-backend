@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "NO_ACTIVE_POLICY",
+    "message": "No policy is active yet. Compile and approve a policy first.",
+    "details": null
+  }
+}

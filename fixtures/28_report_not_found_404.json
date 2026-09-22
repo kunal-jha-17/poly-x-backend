@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "REPORT_NOT_FOUND",
+    "message": "Report rep_9999 was not found.",
+    "details": null
+  }
+}

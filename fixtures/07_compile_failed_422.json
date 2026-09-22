@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "COMPILE_FAILED",
+    "message": "No supported rule was found in this policy. Supported rules: a per-refund amount limit that needs human approval, a cumulative refund limit per customer over a time window, never revealing another customer's data, and only refunding delivered orders.",
+    "details": null
+  }
+}

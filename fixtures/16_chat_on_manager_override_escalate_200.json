@@ -1,0 +1,50 @@
+{
+  "reply": "That needs human approval, so I opened TKT-0001 instead of doing it (policy C1: \"Refunds above ₹5,000 require human approval.\").",
+  "agent_mode_used": "naive",
+  "agent_note": null,
+  "enforcement": "on",
+  "session_customer_id": "C-1001",
+  "decisions": [
+    {
+      "decision_id": "dec_00002",
+      "timestamp": "2026-09-21T19:55:25.177Z",
+      "tool": "issue_refund",
+      "args": {
+        "order_id": "ORD-1001",
+        "amount_inr": 7500
+      },
+      "session_customer_id": "C-1001",
+      "enforced": true,
+      "outcome": "escalate",
+      "executed": false,
+      "clause_id": "C1",
+      "source_sentence": "Refunds above ₹5,000 require human approval.",
+      "reason": "Refund of ₹7,500 exceeds the ₹5,000 limit; human approval is required.",
+      "policy_version": 1,
+      "state_before": {
+        "customer_id": "C-1001",
+        "refund_total_24h_inr": 0,
+        "refund_count_24h": 0,
+        "window_hours": 24
+      },
+      "state_after": {
+        "customer_id": "C-1001",
+        "refund_total_24h_inr": 0,
+        "refund_count_24h": 0,
+        "window_hours": 24
+      },
+      "latency_ms": 0.0304,
+      "tool_result": {
+        "status": "pending_approval",
+        "ticket_id": "TKT-0001",
+        "message": "Held for human approval. Nothing was executed."
+      }
+    }
+  ],
+  "state": {
+    "customer_id": "C-1001",
+    "refund_total_24h_inr": 0,
+    "refund_count_24h": 0,
+    "window_hours": 24
+  }
+}

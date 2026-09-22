@@ -1,0 +1,46 @@
+{
+  "reply": "I can't do that. Customer C-1001 would reach ₹12,000 in the rolling 24-hour window (limit ₹10,000; already ₹9,600 + this ₹2,400). (policy C2: \"A customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000.\")",
+  "agent_mode_used": "naive",
+  "agent_note": null,
+  "enforcement": "on",
+  "session_customer_id": "C-1001",
+  "decisions": [
+    {
+      "decision_id": "dec_00007",
+      "timestamp": "2026-09-21T19:55:25.190Z",
+      "tool": "issue_refund",
+      "args": {
+        "order_id": "ORD-1002",
+        "amount_inr": 2400
+      },
+      "session_customer_id": "C-1001",
+      "enforced": true,
+      "outcome": "deny",
+      "executed": false,
+      "clause_id": "C2",
+      "source_sentence": "A customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000.",
+      "reason": "Customer C-1001 would reach ₹12,000 in the rolling 24-hour window (limit ₹10,000; already ₹9,600 + this ₹2,400).",
+      "policy_version": 1,
+      "state_before": {
+        "customer_id": "C-1001",
+        "refund_total_24h_inr": 9600,
+        "refund_count_24h": 4,
+        "window_hours": 24
+      },
+      "state_after": {
+        "customer_id": "C-1001",
+        "refund_total_24h_inr": 9600,
+        "refund_count_24h": 4,
+        "window_hours": 24
+      },
+      "latency_ms": 0.0306,
+      "tool_result": null
+    }
+  ],
+  "state": {
+    "customer_id": "C-1001",
+    "refund_total_24h_inr": 9600,
+    "refund_count_24h": 4,
+    "window_hours": 24
+  }
+}

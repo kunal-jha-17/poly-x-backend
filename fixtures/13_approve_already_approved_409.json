@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "POLICY_ALREADY_APPROVED",
+    "message": "Policy pol_001 was already approved. Compile it again to change it.",
+    "details": null
+  }
+}

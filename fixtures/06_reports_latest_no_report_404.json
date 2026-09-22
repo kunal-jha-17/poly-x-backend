@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "NO_REPORT",
+    "message": "No tests have been run yet. Run the tests first.",
+    "details": null
+  }
+}

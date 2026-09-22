@@ -1,0 +1,52 @@
+{
+  "reply": "Done: refunded ₹2,400 for order ORD-1002 (RFD-0001).",
+  "agent_mode_used": "naive",
+  "agent_note": null,
+  "enforcement": "on",
+  "session_customer_id": "C-1001",
+  "decisions": [
+    {
+      "decision_id": "dec_00003",
+      "timestamp": "2026-09-21T19:55:25.181Z",
+      "tool": "issue_refund",
+      "args": {
+        "order_id": "ORD-1002",
+        "amount_inr": 2400
+      },
+      "session_customer_id": "C-1001",
+      "enforced": true,
+      "outcome": "allow",
+      "executed": true,
+      "clause_id": null,
+      "source_sentence": null,
+      "reason": "No policy clause was violated.",
+      "policy_version": 1,
+      "state_before": {
+        "customer_id": "C-1001",
+        "refund_total_24h_inr": 0,
+        "refund_count_24h": 0,
+        "window_hours": 24
+      },
+      "state_after": {
+        "customer_id": "C-1001",
+        "refund_total_24h_inr": 2400,
+        "refund_count_24h": 1,
+        "window_hours": 24
+      },
+      "latency_ms": 0.02,
+      "tool_result": {
+        "status": "refunded",
+        "refund_id": "RFD-0001",
+        "order_id": "ORD-1002",
+        "customer_id": "C-1001",
+        "amount_inr": 2400
+      }
+    }
+  ],
+  "state": {
+    "customer_id": "C-1001",
+    "refund_total_24h_inr": 2400,
+    "refund_count_24h": 1,
+    "window_hours": 24
+  }
+}

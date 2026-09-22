@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "POLICY_NOT_FOUND",
+    "message": "Policy pol_999 was not found.",
+    "details": null
+  }
+}
