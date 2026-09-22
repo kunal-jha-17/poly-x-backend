@@ -6,5 +6,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY *.py ./
 ENV PORT=8000
-# Secrets (ANTHROPIC_API_KEY) and CORS_ORIGINS come from the host's environment, never from the image.
+# Secrets (GROQ_API_KEY) and CORS_ORIGINS come from the host's environment, never from the image.
 CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT} --workers 1"]

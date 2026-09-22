@@ -23,7 +23,7 @@ ONE worker only (state is in memory, serialised by a lock). `Dockerfile` is a ge
 | Env var | Purpose |
 | --- | --- |
 | `CORS_ORIGINS` | Exact frontend origin(s), comma separated. No trailing slash needed. Default `http://localhost:5173`. |
-| `ANTHROPIC_API_KEY` | Enables the LLM compiler and live agent. Without it everything works and says so (`compiled_by: "fixture"`). |
+| `GROQ_API_KEY` | Enables the LLM compiler and live agent (via Groq). Without it everything works and says so (`compiled_by: "fixture"`). |
 | `CRYPTIX_LLM_MODEL` | Optional. Default `claude-haiku-4-5-20251001`. |
 | `CRYPTIX_DISABLE_LLM=1` | Force the no-LLM path (failure drill). |
 
