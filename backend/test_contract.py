@@ -1,7 +1,9 @@
-"""Contract + engine tests. Run before every push: `pytest -q`.
+"""Contract + engine tests for the v1.0.0 surface (support pack). Run before every push: `pytest -q`.
 
-Groups: engine edge cases (brief B2), fixed cases (A5/A7), compiler (B4), live agent (B5),
-API + error contract (A1-A4), integration script (C2), type/contract drift (B3).
+Groups: engine edge cases, fixed cases, compiler, live agent, API + error contract, integration script,
+type/contract drift. Everything added in v1.1.0 is tested in test_v11.py.
+
+v1.1.0 is additive, so these tests changed in only four places, each marked "v1.1.0:" below.
 """
 import inspect
 import json
@@ -256,7 +258,13 @@ def test_no_llm_in_the_decision_path():
     import textwrap
 
     used = set()
-    for f in (engine_mod.evaluate, engine_mod._check, engine_mod.run_call, engine_mod._execute, engine_mod._validate_args):
+    import pack_devops
+    import packs
+
+    # v1.1.0: the per-scenario decision code lives in the packs, so the guard covers those methods too
+    pack_fns = [getattr(cls, name) for cls in (packs.SupportPack, pack_devops.DevOpsPack)
+                for name in ("validate_args", "subject", "check", "execute", "state_subject", "snapshot")]
+    for f in [engine_mod.evaluate, engine_mod._check, engine_mod.run_call, engine_mod._execute, engine_mod._validate_args] + pack_fns:
         for node in ast.walk(ast.parse(textwrap.dedent(inspect.getsource(f)))):
             if isinstance(node, ast.Name):
                 used.add(node.id.lower())
@@ -410,10 +418,20 @@ def test_llm_api_error_falls_back_to_fixture():
 
 
 def test_llm_saying_nothing_is_supported_is_compile_failed_not_a_fallback():
-    eng, fake = llm_engine([text_resp(json.dumps({"clauses": [], "ambiguities": [], "unsupported": ["Be nice."]}))])
+    nothing = json.dumps({"clauses": [], "ambiguities": [], "unsupported": ["Be nice."]})
+    eng, fake = llm_engine([text_resp(nothing)])
     with pytest.raises(compiler.CompileError):
-        eng.compile(CompileRequest(policy_text=scenario.DEFAULT_POLICY_TEXT))
-    assert len(fake.calls) == 1
+        eng.compile(CompileRequest(policy_text="Be nice to every customer."))
+    assert len(fake.calls) == 1  # a real answer, not an outage: no retry
+
+
+def test_llm_wrongly_saying_nothing_is_supported_is_overruled_by_the_rule_parser():
+    """v1.1.0: a model's "no rule here" is believed only if the deterministic parser agrees. A small local model
+    that misses four obvious rules must not turn a valid policy into COMPILE_FAILED."""
+    eng, fake = llm_engine([text_resp(json.dumps({"clauses": [], "ambiguities": [], "unsupported": []}))])
+    d = eng.compile(CompileRequest(policy_text=scenario.DEFAULT_POLICY_TEXT))
+    assert d.compiled_by == "fixture" and len(d.clauses) == 4 and len(fake.calls) == 1
+    assert any("found no supported rule" in w for w in d.warnings) and d.compiler.provider == "rules"
 
 
 def test_llm_patch_outside_scope_and_window_type_is_rejected_and_falls_back():
@@ -515,7 +533,7 @@ def test_requesting_llm_when_unavailable_gives_naive_with_a_note(eng):
 # ================================================================ C2: the 11-step integration script (backend side)
 def test_integration_script_end_to_end(client):
     h = client.get(f"{API}/health")
-    assert h.headers["x-contract-version"] == CONTRACT_VERSION and h.json()["contract_version"] == "1.0.0"
+    assert h.headers["x-contract-version"] == CONTRACT_VERSION and h.json()["contract_version"] == CONTRACT_VERSION == "1.1.0"  # v1.1.0: additive bump
     sc = client.get(f"{API}/scenario").json()
     presets = {p["preset_id"]: p for p in sc["attack_presets"]}
     draft = client.post(f"{API}/policy/compile", json={"policy_text": sc["default_policy_text"], "mode": "fixture"}).json()
@@ -562,9 +580,18 @@ def test_every_attack_preset_is_stopped_with_the_firewall_and_lands_without_it(e
 
 
 # ================================================================ A1-A4: API and error contract
+V1_0_OPERATIONS = {
+    ("/health", "get"), ("/scenario", "get"), ("/policy/compile", "post"), ("/policy/{policy_id}/approve", "post"),
+    ("/policy/active", "get"), ("/agent/chat", "post"), ("/state/reset", "post"), ("/decisions", "get"),
+    ("/tests/cases", "get"), ("/tests/run", "post"), ("/reports/latest", "get"), ("/reports/{report_id}", "get"),
+}
+
+
 def test_twelve_endpoints(client):
-    ops = [(p, m) for p, v in client.get("/openapi.json").json()["paths"].items() for m in v]
-    assert len(ops) == 12 and all(p.startswith(API) for p, _ in ops)
+    """v1.1.0: the twelve v1.0.0 operations are all still there; 27 more were added beside them."""
+    ops = {(p, m) for p, v in client.get("/openapi.json").json()["paths"].items() for m in v}
+    assert all(p.startswith(API) for p, _ in ops)
+    assert {(API + p, m) for p, m in V1_0_OPERATIONS} <= ops and len(ops) == 39
 
 
 def test_scenario_shape(client):
@@ -734,7 +761,8 @@ def test_money_is_an_integer_everywhere(client):
 def test_response_models_do_not_leak_extra_fields(client):
     api_approve(client)
     d = client.post(f"{API}/policy/compile", json={"policy_text": scenario.DEFAULT_POLICY_TEXT, "mode": "fixture"}).json()
-    assert set(d) == {"policy_id", "created_at", "policy_text", "compiled_by", "clauses", "ambiguities", "warnings"}
+    v1_0 = {"policy_id", "created_at", "policy_text", "compiled_by", "clauses", "ambiguities", "warnings"}
+    assert set(d) == v1_0 | {"scenario_id", "compiler", "validation", "source"}  # v1.1.0: four documented additions
     assert set(d["ambiguities"][0]) == {"ambiguity_id", "clause_id", "question", "options", "default_option_id"}
     assert set(d["ambiguities"][0]["options"][0]) == {"option_id", "label", "description"}
 
@@ -744,8 +772,9 @@ def test_decision_object_has_exactly_the_documented_fields(eng):
     for _ in range(4):
         refund(eng, "ORD-1002", 2400)
     d = refund(eng, "ORD-1002", 2400).model_dump()
-    assert list(d) == ["decision_id", "timestamp", "tool", "args", "session_customer_id", "enforced", "outcome", "executed", "clause_id",
-                       "source_sentence", "reason", "policy_version", "state_before", "state_after", "latency_ms", "tool_result"]
+    v1_0 = ["decision_id", "timestamp", "tool", "args", "session_customer_id", "enforced", "outcome", "executed", "clause_id",
+            "source_sentence", "reason", "policy_version", "state_before", "state_after", "latency_ms", "tool_result"]
+    assert list(d) == v1_0 + ["scenario_id", "ticket_id", "approved_by", "dry_run"]  # v1.1.0: appended, never reordered
     assert d["reason"] == "Customer C-1001 would reach \u20b912,000 in the rolling 24-hour window (limit \u20b910,000; already \u20b99,600 + this \u20b92,400)."
     assert d["source_sentence"] == "A customer's total refunds in any rolling 24-hour period cannot exceed \u20b910,000."
     assert d["timestamp"].endswith("Z") and len(d["timestamp"]) == 24 and d["decision_id"].startswith("dec_")

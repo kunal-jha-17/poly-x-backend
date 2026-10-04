@@ -1,0 +1,12 @@
+{
+  "error": {
+    "code": "SCENARIO_NOT_FOUND",
+    "message": "Scenario 'nope' was not found. Known scenarios: support, devops.",
+    "details": {
+      "scenarios": [
+        "support",
+        "devops"
+      ]
+    }
+  }
+}

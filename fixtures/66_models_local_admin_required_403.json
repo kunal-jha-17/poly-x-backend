@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "ADMIN_REQUIRED",
+    "message": "Runtime model configuration is off. Set POLYX_ADMIN_TOKEN on the server to enable it.",
+    "details": null
+  }
+}

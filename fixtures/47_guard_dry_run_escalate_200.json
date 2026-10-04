@@ -1,0 +1,55 @@
+{
+  "allowed": false,
+  "outcome": "escalate",
+  "executed": false,
+  "clause_id": "C1",
+  "source_sentence": "Deploys to production require human approval.",
+  "reason": "Deploying payments-api to production needs human approval.",
+  "ticket_id": null,
+  "policy_version": 1,
+  "latency_ms": 0.0225,
+  "dry_run": true,
+  "decision": {
+    "decision_id": "dec_00068",
+    "timestamp": "2026-10-04T15:16:25.517Z",
+    "tool": "deploy",
+    "args": {
+      "service": "payments-api",
+      "environment": "production"
+    },
+    "session_customer_id": "U-2001",
+    "enforced": true,
+    "outcome": "escalate",
+    "executed": false,
+    "clause_id": "C1",
+    "source_sentence": "Deploys to production require human approval.",
+    "reason": "Deploying payments-api to production needs human approval.",
+    "policy_version": 1,
+    "state_before": {
+      "customer_id": "U-2001",
+      "refund_total_24h_inr": 0,
+      "refund_count_24h": 0,
+      "window_hours": 24,
+      "subject": "production",
+      "unit": "deploys",
+      "total": 0,
+      "count": 0
+    },
+    "state_after": {
+      "customer_id": "U-2001",
+      "refund_total_24h_inr": 0,
+      "refund_count_24h": 0,
+      "window_hours": 24,
+      "subject": "production",
+      "unit": "deploys",
+      "total": 0,
+      "count": 0
+    },
+    "latency_ms": 0.0225,
+    "tool_result": null,
+    "scenario_id": "devops",
+    "ticket_id": null,
+    "approved_by": null,
+    "dry_run": true
+  }
+}

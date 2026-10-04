@@ -1,4 +1,4 @@
-"""Brief B6: measure honestly and save every number as a file.
+"""Measure honestly and save every number as a file.
 
     python bench_e2e.py --base-url https://<host> --machine "Kunal's laptop, home Wi-Fi" --host "Render free, Singapore"
 
@@ -9,6 +9,9 @@ What it does (against a running server):
      using a read-only 'look up order' message so state does not change; record median and p95,
   4. write measurements/measurement_sheet.md whose numbers are copied from those saved JSON files.
 End-to-end time includes network from THIS machine to THAT host. Say so in the pitch; never call it rule latency.
+
+The server rate-limits /agent/chat (60 per minute per client by default). Start the server you are measuring with
+RATE_LIMIT_DISABLED=1 for this run, then remove it again.
 """
 import argparse
 import json

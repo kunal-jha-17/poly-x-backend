@@ -1,0 +1,29 @@
+# Example: gate merges on your agent policy. Copy this file and ci/polyx_ci.py into your agent's repo.
+# Set the repository variable POLYX_API to your POLY-X server, e.g. https://polyx.onrender.com
+name: policy-tests
+on:
+  pull_request:
+    paths: ["policy.md", "policy.lock.json", ".github/workflows/polyx-policy.yml"]
+  workflow_dispatch:
+
+jobs:
+  polyx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test the policy (fails the build if an attack gets through)
+        env:
+          POLYX_API: ${{ vars.POLYX_API }}
+        run: python ci/polyx_ci.py --lock examples/support.policy.lock.json
+      - name: Upload JUnit + report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polyx-report
+          path: |
+            polyx-junit.xml
+            polyx-summary.md
+            polyx-report.json

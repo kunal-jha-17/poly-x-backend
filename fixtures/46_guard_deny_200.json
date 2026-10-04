@@ -1,0 +1,54 @@
+{
+  "allowed": false,
+  "outcome": "deny",
+  "executed": false,
+  "clause_id": "C3",
+  "source_sentence": "Never reveal another customer's data.",
+  "reason": "Session customer C-1001 may not access data belonging to C-1002.",
+  "ticket_id": null,
+  "policy_version": 1,
+  "latency_ms": 0.0159,
+  "dry_run": false,
+  "decision": {
+    "decision_id": "dec_00067",
+    "timestamp": "2026-10-04T15:16:25.514Z",
+    "tool": "fetch_customer_data",
+    "args": {
+      "customer_id": "C-1002"
+    },
+    "session_customer_id": "C-1001",
+    "enforced": true,
+    "outcome": "deny",
+    "executed": false,
+    "clause_id": "C3",
+    "source_sentence": "Never reveal another customer's data.",
+    "reason": "Session customer C-1001 may not access data belonging to C-1002.",
+    "policy_version": 1,
+    "state_before": {
+      "customer_id": "C-1001",
+      "refund_total_24h_inr": 9000,
+      "refund_count_24h": 2,
+      "window_hours": 24,
+      "subject": "C-1001",
+      "unit": "inr",
+      "total": 9000,
+      "count": 2
+    },
+    "state_after": {
+      "customer_id": "C-1001",
+      "refund_total_24h_inr": 9000,
+      "refund_count_24h": 2,
+      "window_hours": 24,
+      "subject": "C-1001",
+      "unit": "inr",
+      "total": 9000,
+      "count": 2
+    },
+    "latency_ms": 0.0159,
+    "tool_result": null,
+    "scenario_id": "support",
+    "ticket_id": null,
+    "approved_by": null,
+    "dry_run": false
+  }
+}

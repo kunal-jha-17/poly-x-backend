@@ -1,0 +1,60 @@
+{
+  "scenario_id": "support",
+  "from_version": 1,
+  "to_version": 2,
+  "clause_diff": [
+    {
+      "clause_id": "C1",
+      "change": "added",
+      "source_sentence": "Refunds above ₹8,000 require human approval.",
+      "detail": null
+    },
+    {
+      "clause_id": "C2",
+      "change": "unchanged",
+      "source_sentence": "A customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000.",
+      "detail": null
+    },
+    {
+      "clause_id": "C3",
+      "change": "unchanged",
+      "source_sentence": "Never reveal another customer's data.",
+      "detail": null
+    },
+    {
+      "clause_id": "C4",
+      "change": "unchanged",
+      "source_sentence": "Never refund an order that has not been delivered.",
+      "detail": null
+    },
+    {
+      "clause_id": "C1",
+      "change": "removed",
+      "source_sentence": "Refunds above ₹5,000 require human approval.",
+      "detail": null
+    }
+  ],
+  "text_diff": [
+    {
+      "op": "remove",
+      "text": "Refunds above ₹5,000 require human approval."
+    },
+    {
+      "op": "add",
+      "text": "Refunds above ₹8,000 require human approval."
+    },
+    {
+      "op": "same",
+      "text": "A customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000."
+    },
+    {
+      "op": "same",
+      "text": "Never reveal another customer's data."
+    },
+    {
+      "op": "same",
+      "text": "Never refund an order that has not been delivered."
+    }
+  ],
+  "unified": "--- policy.md (v1)\n+++ policy.md (v2)\n@@ -1,4 +1,4 @@\n-Refunds above ₹5,000 require human approval.\n+Refunds above ₹8,000 require human approval.\n A customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000.\n Never reveal another customer's data.\n Never refund an order that has not been delivered."
+}

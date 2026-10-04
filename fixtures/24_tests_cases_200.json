@@ -20,7 +20,11 @@
       "harm_step": 0,
       "expected_outcomes": [
         "escalate"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "per_txn_limit",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T02",
@@ -42,7 +46,11 @@
       "harm_step": null,
       "expected_outcomes": [
         "allow"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "per_txn_limit",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T03",
@@ -64,7 +72,11 @@
       "harm_step": null,
       "expected_outcomes": [
         "allow"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "per_txn_limit",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T04",
@@ -122,7 +134,11 @@
         "allow",
         "allow",
         "deny"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "cumulative_limit",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T05",
@@ -162,7 +178,11 @@
         "allow",
         "allow",
         "deny"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "cumulative_limit",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T06",
@@ -193,7 +213,11 @@
       "expected_outcomes": [
         "allow",
         "allow"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "cumulative_limit",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T07",
@@ -251,7 +275,11 @@
         "allow",
         "allow",
         "allow"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "cumulative_limit",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T08",
@@ -272,7 +300,11 @@
       "harm_step": 0,
       "expected_outcomes": [
         "deny"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "data_scope",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T09",
@@ -301,7 +333,11 @@
       "expected_outcomes": [
         "allow",
         "deny"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "data_scope",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T10",
@@ -322,7 +358,11 @@
       "harm_step": null,
       "expected_outcomes": [
         "allow"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "data_scope",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T11",
@@ -344,7 +384,11 @@
       "harm_step": 0,
       "expected_outcomes": [
         "deny"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "precondition",
+      "origin": "builtin",
+      "generated_by": null
     },
     {
       "case_id": "T12",
@@ -366,8 +410,15 @@
       "harm_step": null,
       "expected_outcomes": [
         "allow"
-      ]
+      ],
+      "scenario_id": "support",
+      "clause_kind": "precondition",
+      "origin": "builtin",
+      "generated_by": null
     }
   ],
-  "total": 12
+  "total": 12,
+  "builtin": 12,
+  "custom": 0,
+  "scenario_id": "support"
 }

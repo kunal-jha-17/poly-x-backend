@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "APPROVAL_ALREADY_RESOLVED",
+    "message": "Approval TKT-0001 was already approved by Asha (phone).",
+    "details": {
+      "status": "approved",
+      "resolved_by": "Asha (phone)"
+    }
+  }
+}

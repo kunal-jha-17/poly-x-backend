@@ -1,0 +1,8 @@
+{
+  "chain_valid": true,
+  "events": 44,
+  "head_hash": "7d37d54bc8488c4d1749f1464c86b57156e76946aa918e13452e92e9d3de047f",
+  "first_seq": 1,
+  "broken_at_seq": null,
+  "algorithm": "sha256"
+}

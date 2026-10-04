@@ -1,0 +1,150 @@
+{
+  "policy_id": "pol_002",
+  "created_at": "2026-10-04T15:16:25.479Z",
+  "policy_text": "Deploys to production require human approval.\nNo more than 3 deploys to the same environment in any rolling 24-hour period.\nNever print or reveal secret values.\nNever run destructive shell commands.",
+  "compiled_by": "fixture",
+  "clauses": [
+    {
+      "clause_id": "C1",
+      "source_sentence": "Deploys to production require human approval.",
+      "kind": "env_approval",
+      "action": "escalate",
+      "params": {
+        "field": "environment",
+        "operator": "in",
+        "environments": [
+          "production"
+        ]
+      }
+    },
+    {
+      "clause_id": "C2",
+      "source_sentence": "No more than 3 deploys to the same environment in any rolling 24-hour period.",
+      "kind": "deploy_rate_limit",
+      "action": "deny",
+      "params": {
+        "field": "deploy_count",
+        "max_count": 3,
+        "window_hours": 24,
+        "window_type": "rolling",
+        "scope": "environment"
+      }
+    },
+    {
+      "clause_id": "C3",
+      "source_sentence": "Never print or reveal secret values.",
+      "kind": "secret_protection",
+      "action": "deny",
+      "params": {
+        "subject": "secret_values"
+      }
+    },
+    {
+      "clause_id": "C4",
+      "source_sentence": "Never run destructive shell commands.",
+      "kind": "command_block",
+      "action": "deny",
+      "params": {
+        "category": "destructive",
+        "mode": "denylist"
+      }
+    }
+  ],
+  "ambiguities": [
+    {
+      "ambiguity_id": "A1",
+      "clause_id": "C1",
+      "question": "Should the approval rule cover production only, or staging as well?",
+      "options": [
+        {
+          "option_id": "A1_O1",
+          "label": "Production only",
+          "description": "Only deploys to production are held for a human."
+        },
+        {
+          "option_id": "A1_O2",
+          "label": "Staging and production",
+          "description": "Deploys to staging or production are held for a human."
+        }
+      ],
+      "default_option_id": "A1_O1"
+    },
+    {
+      "ambiguity_id": "A2",
+      "clause_id": "C2",
+      "question": "Should the 24-hour window for the 3-deploy limit slide with time, or reset at midnight?",
+      "options": [
+        {
+          "option_id": "A2_O1",
+          "label": "Rolling 24 hours",
+          "description": "Counts deploys from the last 24 hours, measured from each request."
+        },
+        {
+          "option_id": "A2_O2",
+          "label": "Calendar day (UTC)",
+          "description": "Counts deploys since midnight UTC and resets each day."
+        }
+      ],
+      "default_option_id": "A2_O1"
+    },
+    {
+      "ambiguity_id": "A3",
+      "clause_id": "C4",
+      "question": "How strict should the shell rule be?",
+      "options": [
+        {
+          "option_id": "A3_O1",
+          "label": "Block known destructive commands",
+          "description": "A deny-list: rm -rf, DROP TABLE, force-push and similar are blocked; everything else runs."
+        },
+        {
+          "option_id": "A3_O2",
+          "label": "Allow read-only commands only",
+          "description": "An allow-list: only known read-only commands (ls, git status, kubectl get ...) may run."
+        }
+      ],
+      "default_option_id": "A3_O1"
+    }
+  ],
+  "warnings": [],
+  "scenario_id": "devops",
+  "compiler": {
+    "provider": "rules",
+    "model": null,
+    "location": "server",
+    "label": "Rule parser (deterministic, no model)",
+    "latency_ms": 2.1,
+    "attempts": [
+      {
+        "provider": "rules",
+        "model": null,
+        "ok": true,
+        "latency_ms": 2.1,
+        "error": null
+      }
+    ]
+  },
+  "validation": [
+    {
+      "check": "clause_schema",
+      "passed": true,
+      "detail": "4 rule(s) match the strict schema for their kind; unknown fields are rejected."
+    },
+    {
+      "check": "supported_kinds",
+      "passed": true,
+      "detail": "Every rule uses a kind this agent's engine implements."
+    },
+    {
+      "check": "fixed_actions",
+      "passed": true,
+      "detail": "What a broken rule does (deny or escalate) is fixed by its kind, not chosen by the proposer."
+    },
+    {
+      "check": "ambiguities_asked",
+      "passed": true,
+      "detail": "3 open question(s) must be answered by a human before approval."
+    }
+  ],
+  "source": "typed"
+}

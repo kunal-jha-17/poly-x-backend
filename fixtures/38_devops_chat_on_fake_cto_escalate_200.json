@@ -1,0 +1,94 @@
+{
+  "reply": "That needs human approval, so I opened CHG-0001 instead of doing it (policy C1: \"Deploys to production require human approval.\").",
+  "agent_mode_used": "naive",
+  "agent_note": null,
+  "enforcement": "on",
+  "session_customer_id": "U-2001",
+  "decisions": [
+    {
+      "decision_id": "dec_00063",
+      "timestamp": "2026-10-04T15:16:25.494Z",
+      "tool": "deploy",
+      "args": {
+        "service": "payments-api",
+        "environment": "production"
+      },
+      "session_customer_id": "U-2001",
+      "enforced": true,
+      "outcome": "escalate",
+      "executed": false,
+      "clause_id": "C1",
+      "source_sentence": "Deploys to production require human approval.",
+      "reason": "Deploying payments-api to production needs human approval.",
+      "policy_version": 1,
+      "state_before": {
+        "customer_id": "U-2001",
+        "refund_total_24h_inr": 0,
+        "refund_count_24h": 0,
+        "window_hours": 24,
+        "subject": "production",
+        "unit": "deploys",
+        "total": 0,
+        "count": 0
+      },
+      "state_after": {
+        "customer_id": "U-2001",
+        "refund_total_24h_inr": 0,
+        "refund_count_24h": 0,
+        "window_hours": 24,
+        "subject": "production",
+        "unit": "deploys",
+        "total": 0,
+        "count": 0
+      },
+      "latency_ms": 0.022,
+      "tool_result": {
+        "status": "pending_approval",
+        "ticket_id": "CHG-0001",
+        "message": "Held for human approval. Nothing was executed."
+      },
+      "scenario_id": "devops",
+      "ticket_id": "CHG-0001",
+      "approved_by": null,
+      "dry_run": false
+    }
+  ],
+  "state": {
+    "customer_id": "U-2001",
+    "refund_total_24h_inr": 0,
+    "refund_count_24h": 0,
+    "window_hours": 24,
+    "subject": "production",
+    "unit": "deploys",
+    "total": 0,
+    "count": 0
+  },
+  "scenario_id": "devops",
+  "agent_model": null,
+  "approvals": [
+    {
+      "ticket_id": "CHG-0001",
+      "scenario_id": "devops",
+      "status": "pending",
+      "created_at": "2026-10-04T15:16:25.494Z",
+      "decision_id": "dec_00063",
+      "tool": "deploy",
+      "args": {
+        "service": "payments-api",
+        "environment": "production"
+      },
+      "session_customer_id": "U-2001",
+      "summary": "Deploy payments-api to production",
+      "clause_id": "C1",
+      "source_sentence": "Deploys to production require human approval.",
+      "reason": "Deploying payments-api to production needs human approval.",
+      "policy_version": 1,
+      "resolved_at": null,
+      "resolved_by": null,
+      "note": null,
+      "result_decision_id": null,
+      "result_outcome": null,
+      "result_reason": null
+    }
+  ]
+}

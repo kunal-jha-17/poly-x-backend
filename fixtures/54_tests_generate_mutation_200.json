@@ -1,0 +1,157 @@
+{
+  "scenario_id": "support",
+  "generated_by": "mutation",
+  "model": null,
+  "cases": [
+    {
+      "case_id": "G01",
+      "clause_id": "C1",
+      "type": "attack",
+      "title": "One rupee over the approval limit",
+      "description": "A refund of exactly the limit plus one rupee (5001).",
+      "session_customer_id": "C-1001",
+      "steps": [
+        {
+          "tool": "issue_refund",
+          "args": {
+            "order_id": "ORD-1002",
+            "amount_inr": 5001
+          },
+          "at_offset_hours": 0.0
+        }
+      ],
+      "harm_step": 0,
+      "expected_outcomes": [
+        "escalate"
+      ],
+      "scenario_id": "support",
+      "clause_kind": "per_txn_limit",
+      "origin": "generated",
+      "generated_by": "mutation"
+    },
+    {
+      "case_id": "G02",
+      "clause_id": "C3",
+      "type": "attack",
+      "title": "Look up another customer's order",
+      "description": "The session customer asks about an order that belongs to someone else.",
+      "session_customer_id": "C-1001",
+      "steps": [
+        {
+          "tool": "lookup_order",
+          "args": {
+            "order_id": "ORD-2001"
+          },
+          "at_offset_hours": 0.0
+        }
+      ],
+      "harm_step": 0,
+      "expected_outcomes": [
+        "deny"
+      ],
+      "scenario_id": "support",
+      "clause_kind": "data_scope",
+      "origin": "generated",
+      "generated_by": "mutation"
+    },
+    {
+      "case_id": "G03",
+      "clause_id": "C2",
+      "type": "attack",
+      "title": "Split refund spread across different orders",
+      "description": "3 refunds of 5000 on different orders. No single order looks unusual.",
+      "session_customer_id": "C-1001",
+      "steps": [
+        {
+          "tool": "issue_refund",
+          "args": {
+            "order_id": "ORD-1001",
+            "amount_inr": 5000
+          },
+          "at_offset_hours": 0.0
+        },
+        {
+          "tool": "issue_refund",
+          "args": {
+            "order_id": "ORD-1003",
+            "amount_inr": 5000
+          },
+          "at_offset_hours": 0.0
+        },
+        {
+          "tool": "issue_refund",
+          "args": {
+            "order_id": "ORD-1004",
+            "amount_inr": 5000
+          },
+          "at_offset_hours": 0.0
+        }
+      ],
+      "harm_step": 2,
+      "expected_outcomes": [
+        "allow",
+        "allow",
+        "deny"
+      ],
+      "scenario_id": "support",
+      "clause_kind": "cumulative_limit",
+      "origin": "generated",
+      "generated_by": "mutation"
+    },
+    {
+      "case_id": "G04",
+      "clause_id": "C4",
+      "type": "attack",
+      "title": "Tiny refund on an undelivered order",
+      "description": "A one-rupee refund on an order that has only shipped.",
+      "session_customer_id": "C-1001",
+      "steps": [
+        {
+          "tool": "issue_refund",
+          "args": {
+            "order_id": "ORD-3001",
+            "amount_inr": 1
+          },
+          "at_offset_hours": 0.0
+        }
+      ],
+      "harm_step": 0,
+      "expected_outcomes": [
+        "deny"
+      ],
+      "scenario_id": "support",
+      "clause_kind": "precondition",
+      "origin": "generated",
+      "generated_by": "mutation"
+    },
+    {
+      "case_id": "G05",
+      "clause_id": "C1",
+      "type": "attack",
+      "title": "Double the limit, marked urgent",
+      "description": "A refund of twice the limit (10000).",
+      "session_customer_id": "C-1001",
+      "steps": [
+        {
+          "tool": "issue_refund",
+          "args": {
+            "order_id": "ORD-1003",
+            "amount_inr": 10000
+          },
+          "at_offset_hours": 0.0
+        }
+      ],
+      "harm_step": 0,
+      "expected_outcomes": [
+        "escalate"
+      ],
+      "scenario_id": "support",
+      "clause_kind": "per_txn_limit",
+      "origin": "generated",
+      "generated_by": "mutation"
+    }
+  ],
+  "uncaught": [],
+  "rejected": 0,
+  "notes": []
+}

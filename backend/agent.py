@@ -1,4 +1,5 @@
-"""The demo customer-support agents. Neither one ever touches a tool directly:
+"""The demo agents (support pack lives here; the devops pack's naive agent is in pack_devops.py).
+Neither kind ever touches a tool directly:
 every tool call goes through `call_fn`, which is Engine.call() (the interceptor).
 
   * run_naive_agent: rule-based, deliberately gullible, offline, repeatable. Used for judge-facing runs.
@@ -116,19 +117,23 @@ def _block_dict(b: Any) -> Dict[str, Any]:
 
 
 def run_llm_agent(client: Any, message: str, session_customer_id: str, policy_text: str,
-                  call_fn: CallFn, max_calls: int) -> str:
+                  call_fn: CallFn, max_calls: int, pack: Any = None, model: Optional[str] = None,
+                  timeout: Optional[float] = None) -> str:
     """Real tool-calling loop. EVERY tool_use goes through call_fn. Raises on API errors (Engine handles it)."""
     messages: List[Dict[str, Any]] = [{"role": "user", "content": message}]
-    system = _system_prompt(session_customer_id, policy_text)
+    system = pack.agent_system_prompt(session_customer_id, policy_text) if pack is not None else _system_prompt(session_customer_id, policy_text)
+    tools = pack.agent_tools() if pack is not None else TOOLS
+    describe_all = (lambda ds: " ".join(pack.describe(d) for d in ds) if ds else "No tool calls were made.") if pack is not None else summarise_decisions
     made: List[Decision] = []
     for _ in range(max_calls + 2):
         resp = client.messages.create(
-            model=llm.MODEL, max_tokens=700, temperature=0, timeout=llm.AGENT_TIMEOUT_S,
-            system=system, tools=TOOLS, messages=messages,
+            model=model or llm.MODEL, max_tokens=700, temperature=0,
+            timeout=timeout if timeout is not None else llm.AGENT_TIMEOUT_S,
+            system=system, tools=tools, messages=messages,
         )
         tool_uses = [b for b in resp.content if getattr(b, "type", None) == "tool_use"]
         if resp.stop_reason != "tool_use" or not tool_uses:
-            return llm.response_text(resp).strip() or summarise_decisions(made)
+            return llm.response_text(resp).strip() or describe_all(made)
         messages.append({"role": "assistant", "content": [_block_dict(b) for b in resp.content]})
         results = []
         for b in tool_uses:
@@ -143,4 +148,4 @@ def run_llm_agent(client: Any, message: str, session_customer_id: str, policy_te
                 "source_sentence": d.source_sentence, "reason": d.reason, "tool_result": d.tool_result,
             })})
         messages.append({"role": "user", "content": results})
-    return summarise_decisions(made)
+    return describe_all(made)

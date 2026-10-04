@@ -1,0 +1,75 @@
+{
+  "approval": {
+    "ticket_id": "TKT-0001",
+    "scenario_id": "support",
+    "status": "approved",
+    "created_at": "2026-10-04T15:16:25.497Z",
+    "decision_id": "dec_00064",
+    "tool": "issue_refund",
+    "args": {
+      "order_id": "ORD-1001",
+      "amount_inr": 7500
+    },
+    "session_customer_id": "C-1001",
+    "summary": "Refund ₹7,500 on order ORD-1001",
+    "clause_id": "C1",
+    "source_sentence": "Refunds above ₹5,000 require human approval.",
+    "reason": "Refund of ₹7,500 exceeds the ₹5,000 limit; human approval is required.",
+    "policy_version": 1,
+    "resolved_at": "2026-10-04T15:16:25.502Z",
+    "resolved_by": "Asha (phone)",
+    "note": "Verified with the customer.",
+    "result_decision_id": "dec_00065",
+    "result_outcome": "allow",
+    "result_reason": "Released by Asha (phone) from the approval inbox (TKT-0001). Every deny rule was checked again and none was violated."
+  },
+  "decision": {
+    "decision_id": "dec_00065",
+    "timestamp": "2026-10-04T15:16:25.502Z",
+    "tool": "issue_refund",
+    "args": {
+      "order_id": "ORD-1001",
+      "amount_inr": 7500
+    },
+    "session_customer_id": "C-1001",
+    "enforced": true,
+    "outcome": "allow",
+    "executed": true,
+    "clause_id": null,
+    "source_sentence": null,
+    "reason": "Released by Asha (phone) from the approval inbox (TKT-0001). Every deny rule was checked again and none was violated.",
+    "policy_version": 1,
+    "state_before": {
+      "customer_id": "C-1001",
+      "refund_total_24h_inr": 0,
+      "refund_count_24h": 0,
+      "window_hours": 24,
+      "subject": "C-1001",
+      "unit": "inr",
+      "total": 0,
+      "count": 0
+    },
+    "state_after": {
+      "customer_id": "C-1001",
+      "refund_total_24h_inr": 7500,
+      "refund_count_24h": 1,
+      "window_hours": 24,
+      "subject": "C-1001",
+      "unit": "inr",
+      "total": 7500,
+      "count": 1
+    },
+    "latency_ms": 0.0202,
+    "tool_result": {
+      "status": "refunded",
+      "refund_id": "RFD-0001",
+      "order_id": "ORD-1001",
+      "customer_id": "C-1001",
+      "amount_inr": 7500
+    },
+    "scenario_id": "support",
+    "ticket_id": "TKT-0001",
+    "approved_by": "Asha (phone)",
+    "dry_run": false
+  }
+}

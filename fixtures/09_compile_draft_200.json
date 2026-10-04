@@ -1,6 +1,6 @@
 {
   "policy_id": "pol_001",
-  "created_at": "2026-09-21T19:55:25.144Z",
+  "created_at": "2026-10-04T15:16:25.399Z",
   "policy_text": "Refunds above ₹5,000 require human approval.\nA customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000.\nNever reveal another customer's data.\nNever refund an order that has not been delivered.",
   "compiled_by": "fixture",
   "clauses": [
@@ -88,5 +88,45 @@
       "default_option_id": "A2_O1"
     }
   ],
-  "warnings": []
+  "warnings": [],
+  "scenario_id": "support",
+  "compiler": {
+    "provider": "rules",
+    "model": null,
+    "location": "server",
+    "label": "Rule parser (deterministic, no model)",
+    "latency_ms": 1.8,
+    "attempts": [
+      {
+        "provider": "rules",
+        "model": null,
+        "ok": true,
+        "latency_ms": 1.7,
+        "error": null
+      }
+    ]
+  },
+  "validation": [
+    {
+      "check": "clause_schema",
+      "passed": true,
+      "detail": "4 rule(s) match the strict schema for their kind; unknown fields are rejected."
+    },
+    {
+      "check": "supported_kinds",
+      "passed": true,
+      "detail": "Every rule uses a kind this agent's engine implements."
+    },
+    {
+      "check": "fixed_actions",
+      "passed": true,
+      "detail": "What a broken rule does (deny or escalate) is fixed by its kind, not chosen by the proposer."
+    },
+    {
+      "check": "ambiguities_asked",
+      "passed": true,
+      "detail": "2 open question(s) must be answered by a human before approval."
+    }
+  ],
+  "source": "typed"
 }

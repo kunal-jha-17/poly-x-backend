@@ -1,0 +1,45 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "support",
+      "title": "Customer-support refund agent",
+      "description": "An agent that can look up orders, issue refunds and fetch customer records.",
+      "actor_label": "customer",
+      "tools": [
+        "lookup_order",
+        "issue_refund",
+        "fetch_customer_data"
+      ],
+      "clause_kinds": [
+        "per_txn_limit",
+        "cumulative_limit",
+        "data_scope",
+        "precondition"
+      ],
+      "active_policy_version": 1,
+      "builtin_cases": 12,
+      "custom_cases": 0
+    },
+    {
+      "scenario_id": "devops",
+      "title": "DevOps release agent",
+      "description": "An agent that can run shell commands, deploy services and read secrets.",
+      "actor_label": "engineer",
+      "tools": [
+        "run_shell",
+        "deploy",
+        "read_secret"
+      ],
+      "clause_kinds": [
+        "env_approval",
+        "deploy_rate_limit",
+        "secret_protection",
+        "command_block"
+      ],
+      "active_policy_version": null,
+      "builtin_cases": 12,
+      "custom_cases": 0
+    }
+  ],
+  "default_scenario_id": "support"
+}

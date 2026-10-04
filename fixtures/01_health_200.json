@@ -1,6 +1,60 @@
 {
   "status": "ok",
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "llm_available": false,
-  "active_policy_version": null
+  "active_policy_version": null,
+  "service": "poly-x",
+  "uptime_s": 0.1,
+  "scenarios": [
+    {
+      "scenario_id": "support",
+      "title": "Customer-support refund agent",
+      "active_policy_version": null
+    },
+    {
+      "scenario_id": "devops",
+      "title": "DevOps release agent",
+      "active_policy_version": null
+    }
+  ],
+  "models": [
+    {
+      "provider": "local",
+      "label": "Local open-source model",
+      "model": null,
+      "host": null,
+      "location": "local",
+      "configured": false,
+      "available": false,
+      "last_checked_at": null,
+      "last_error": null,
+      "latency_ms": null
+    },
+    {
+      "provider": "cloud",
+      "label": "Cloud open-weight model",
+      "model": null,
+      "host": null,
+      "location": "cloud",
+      "configured": false,
+      "available": false,
+      "last_checked_at": null,
+      "last_error": null,
+      "latency_ms": null
+    },
+    {
+      "provider": "rules",
+      "label": "Rule parser (deterministic, no model)",
+      "model": null,
+      "host": null,
+      "location": "server",
+      "configured": true,
+      "available": true,
+      "last_checked_at": null,
+      "last_error": null,
+      "latency_ms": null
+    }
+  ],
+  "pending_approvals": 0,
+  "auto_armed": false
 }

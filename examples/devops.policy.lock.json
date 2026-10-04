@@ -1,0 +1,56 @@
+{
+  "format": "polyx.policy/v1",
+  "scenario_id": "devops",
+  "policy_version": 1,
+  "policy_text": "Deploys to production require human approval.\nNo more than 3 deploys to the same environment in any rolling 24-hour period.\nNever print or reveal secret values.\nNever run destructive shell commands.",
+  "clauses": [
+    {
+      "clause_id": "C1",
+      "source_sentence": "Deploys to production require human approval.",
+      "kind": "env_approval",
+      "action": "escalate",
+      "params": {
+        "field": "environment",
+        "operator": "in",
+        "environments": [
+          "production"
+        ]
+      }
+    },
+    {
+      "clause_id": "C2",
+      "source_sentence": "No more than 3 deploys to the same environment in any rolling 24-hour period.",
+      "kind": "deploy_rate_limit",
+      "action": "deny",
+      "params": {
+        "field": "deploy_count",
+        "max_count": 3,
+        "window_hours": 24,
+        "window_type": "rolling",
+        "scope": "environment"
+      }
+    },
+    {
+      "clause_id": "C3",
+      "source_sentence": "Never print or reveal secret values.",
+      "kind": "secret_protection",
+      "action": "deny",
+      "params": {
+        "subject": "secret_values"
+      }
+    },
+    {
+      "clause_id": "C4",
+      "source_sentence": "Never run destructive shell commands.",
+      "kind": "command_block",
+      "action": "deny",
+      "params": {
+        "category": "destructive",
+        "mode": "denylist"
+      }
+    }
+  ],
+  "compiled_by": "fixture",
+  "exported_at": "2026-10-04T00:00:00.000Z",
+  "checksum": "sha256:e7df5c8e22502218122616f68c82c9c3356503bb0606b892d754a98344e5c846"
+}

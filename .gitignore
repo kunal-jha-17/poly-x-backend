@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.venv/
+polyx-junit.xml
+polyx-summary.md
+polyx-report.json

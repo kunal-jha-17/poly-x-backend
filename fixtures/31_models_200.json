@@ -1,0 +1,46 @@
+{
+  "providers": [
+    {
+      "provider": "local",
+      "label": "Local open-source model",
+      "model": null,
+      "host": null,
+      "location": "local",
+      "configured": false,
+      "available": false,
+      "last_checked_at": null,
+      "last_error": null,
+      "latency_ms": null
+    },
+    {
+      "provider": "cloud",
+      "label": "Cloud open-weight model",
+      "model": null,
+      "host": null,
+      "location": "cloud",
+      "configured": false,
+      "available": false,
+      "last_checked_at": null,
+      "last_error": null,
+      "latency_ms": null
+    },
+    {
+      "provider": "rules",
+      "label": "Rule parser (deterministic, no model)",
+      "model": null,
+      "host": null,
+      "location": "server",
+      "configured": true,
+      "available": true,
+      "last_checked_at": null,
+      "last_error": null,
+      "latency_ms": null
+    }
+  ],
+  "order": [
+    "local",
+    "cloud",
+    "rules"
+  ],
+  "runtime_config_enabled": false
+}

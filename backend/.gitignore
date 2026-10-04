@@ -3,6 +3,12 @@ __pycache__/
 .pytest_cache/
 .env
 .env.*
+!.env.example
 *.key
+*.pem
 measurements/
 .venv/
+.DS_Store
+polyx-junit.xml
+polyx-summary.md
+polyx-report.json

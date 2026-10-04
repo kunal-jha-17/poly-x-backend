@@ -7,7 +7,7 @@
   "decisions": [
     {
       "decision_id": "dec_00010",
-      "timestamp": "2026-09-21T19:55:25.195Z",
+      "timestamp": "2026-10-04T15:16:25.436Z",
       "tool": "fetch_customer_data",
       "args": {
         "customer_id": "C-1002"
@@ -24,22 +24,41 @@
         "customer_id": "C-1001",
         "refund_total_24h_inr": 9600,
         "refund_count_24h": 4,
-        "window_hours": 24
+        "window_hours": 24,
+        "subject": "C-1001",
+        "unit": "inr",
+        "total": 9600,
+        "count": 4
       },
       "state_after": {
         "customer_id": "C-1001",
         "refund_total_24h_inr": 9600,
         "refund_count_24h": 4,
-        "window_hours": 24
+        "window_hours": 24,
+        "subject": "C-1001",
+        "unit": "inr",
+        "total": 9600,
+        "count": 4
       },
-      "latency_ms": 0.0152,
-      "tool_result": null
+      "latency_ms": 0.014,
+      "tool_result": null,
+      "scenario_id": "support",
+      "ticket_id": null,
+      "approved_by": null,
+      "dry_run": false
     }
   ],
   "state": {
     "customer_id": "C-1001",
     "refund_total_24h_inr": 9600,
     "refund_count_24h": 4,
-    "window_hours": 24
-  }
+    "window_hours": 24,
+    "subject": "C-1001",
+    "unit": "inr",
+    "total": 9600,
+    "count": 4
+  },
+  "scenario_id": "support",
+  "agent_model": null,
+  "approvals": []
 }

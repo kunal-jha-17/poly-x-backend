@@ -1,0 +1,56 @@
+{
+  "format": "polyx.policy/v1",
+  "scenario_id": "support",
+  "policy_version": 1,
+  "policy_text": "Refunds above ₹5,000 require human approval.\nA customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000.\nNever reveal another customer's data.\nNever refund an order that has not been delivered.",
+  "clauses": [
+    {
+      "clause_id": "C1",
+      "source_sentence": "Refunds above ₹5,000 require human approval.",
+      "kind": "per_txn_limit",
+      "action": "escalate",
+      "params": {
+        "field": "amount_inr",
+        "operator": "gt",
+        "value": 5000,
+        "scope": "transaction"
+      }
+    },
+    {
+      "clause_id": "C2",
+      "source_sentence": "A customer's total refunds in any rolling 24-hour period cannot exceed ₹10,000.",
+      "kind": "cumulative_limit",
+      "action": "deny",
+      "params": {
+        "field": "amount_inr",
+        "max_total": 10000,
+        "window_hours": 24,
+        "window_type": "rolling",
+        "scope": "customer"
+      }
+    },
+    {
+      "clause_id": "C3",
+      "source_sentence": "Never reveal another customer's data.",
+      "kind": "data_scope",
+      "action": "deny",
+      "params": {
+        "subject": "session_customer"
+      }
+    },
+    {
+      "clause_id": "C4",
+      "source_sentence": "Never refund an order that has not been delivered.",
+      "kind": "precondition",
+      "action": "deny",
+      "params": {
+        "field": "order.status",
+        "operator": "eq",
+        "value": "delivered"
+      }
+    }
+  ],
+  "compiled_by": "fixture",
+  "exported_at": "2026-10-04T15:16:25.531Z",
+  "checksum": "sha256:560f35656f8678cff07fea385c07dd28e2b1dadfb38716873481019c7b2a5350"
+}

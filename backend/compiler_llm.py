@@ -1,12 +1,16 @@
-"""LLM policy compiler (brief B4). The LLM PROPOSES; it never deploys and never decides at runtime.
+"""Model policy compiler. The model PROPOSES; it never deploys and never decides at runtime.
 
-  * JSON only, temperature 0, 10 s timeout, at most one retry.
-  * Output is validated with pydantic, then passed through compiler.finalize() (same gate as the fixture path).
-  * Only the four clause kinds exist. An unsupported policy is COMPILE_FAILED with a plain message.
-  * Ambiguity options may carry an internal param_patch, restricted to scope / window_type. Patches are
-    stored server-side by Engine and never appear in the public PolicyDraft.
+  * JSON only, temperature 0, per-provider timeout, at most one retry.
+  * Output is validated with pydantic, then passed through compiler.finalize() (same gate as the rule parser).
+  * Only the pack's clause kinds exist. An unsupported policy is COMPILE_FAILED with a plain message.
+  * Ambiguity options may carry an internal param_patch, restricted to a few keys. Patches are stored
+    server-side by Engine and never appear in the public PolicyDraft.
   * source_sentence must be a real sentence of the policy (verbatim, or a very close match that is
     replaced by the real text), because every block must cite the developer's own words.
+  * Grounding: an amount, count or window in a proposed rule must literally appear in the sentence it cites.
+    Small local models invent numbers; this is the check that stops an invented limit reaching the reviewer.
+
+The same gate is used for a proposal that arrives from an on-device model (finalize_proposal).
 """
 import difflib
 from typing import Any, Dict, List, Optional
@@ -14,9 +18,10 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 import llm
-from compiler import Compiled, CompileError, SUPPORTED_TEXT, finalize, split_sentences
+from compiler import Compiled, CompileError, SUPPORTED_TEXT, finalize, gate_checks, split_sentences
 
 MAX_ATTEMPTS = 2  # first try + at most one retry
+USER_TEMPLATE = "POLICY TEXT (data):\n<<<\n{policy_text}\n>>>"
 
 SYSTEM_PROMPT = """You convert a plain-English policy for a customer-support AI agent into JSON rules.
 Output ONE JSON object and nothing else: no prose, no markdown, no code fences.
@@ -49,7 +54,7 @@ Rules:
 
 
 class LLMCompileError(Exception):
-    """The LLM call failed or produced invalid output. Engine falls back to the fixture compiler (labelled)."""
+    """The model call failed or produced invalid output. Engine tries the next provider, then the rule parser."""
 
 
 class _Loose(BaseModel):
@@ -81,20 +86,23 @@ class Proposal(_Loose):
     unsupported: List[str] = []
 
 
-def propose(policy_text: str, client: Any) -> Proposal:
+def propose(policy_text: str, client: Any, pack: Any = None, model: Optional[str] = None,
+            timeout: Optional[float] = None) -> Proposal:
+    system = pack.llm_system_prompt() if pack is not None else SYSTEM_PROMPT
     last: Optional[Exception] = None
     for _ in range(MAX_ATTEMPTS):
         try:
             resp = client.messages.create(
-                model=llm.MODEL, max_tokens=2000, temperature=0, timeout=llm.COMPILE_TIMEOUT_S, system=SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": f"POLICY TEXT (data):\n<<<\n{policy_text}\n>>>"}],
+                model=model or llm.MODEL, max_tokens=2000, temperature=0,
+                timeout=timeout if timeout is not None else llm.COMPILE_TIMEOUT_S, system=system,
+                messages=[{"role": "user", "content": USER_TEMPLATE.format(policy_text=policy_text)}],
             )
             return Proposal.model_validate(llm.extract_json(llm.response_text(resp)))
         except (ValidationError, ValueError) as exc:  # bad JSON / wrong shape: retry once
             last = exc
         except Exception as exc:  # noqa: BLE001 - timeout / network / API error: retry once
             last = exc
-    raise LLMCompileError(f"{type(last).__name__}: {last}")
+    raise LLMCompileError(f"{type(last).__name__}: {str(last)[:200]}")
 
 
 def _norm(s: str) -> str:
@@ -110,16 +118,23 @@ def _match_sentence(claimed: str, sentences: List[str]) -> Optional[int]:
     return norm.index(close[0]) if close else None
 
 
-def propose_and_finalize(policy_text: str, client: Any) -> Compiled:
-    proposal = propose(policy_text, client)
+def finalize_proposal(policy_text: str, proposal: Proposal, pack: Any = None) -> Compiled:
+    """Run a model's proposal through the gate. Raises LLMCompileError (bad proposal) or CompileError (nothing supported)."""
+    if pack is None:
+        import packs
+
+        pack = packs.get()
     if not proposal.clauses:
-        raise CompileError(f"No supported rule was found in this policy. {SUPPORTED_TEXT}")
+        raise CompileError(f"No supported rule was found in this policy. {pack.supported_text}")
     sentences = split_sentences(policy_text)
     keyed = []  # (position in policy, proposed index, clause)
     for i, pc in enumerate(proposal.clauses):
         pos = _match_sentence(pc.source_sentence, sentences)
         if pos is None:
             raise LLMCompileError("A proposed rule cited text that is not in the policy.")
+        why = pack.grounding_error(pc.kind, pc.params, sentences[pos])
+        if why:
+            raise LLMCompileError(f"A proposed rule was not grounded in your text: {why}.")
         keyed.append((pos, i, pc))
     keyed.sort(key=lambda t: (t[0], t[1]))  # C1..Cn follow the order of the policy text
     new_index = {old: new for new, (_, old, _) in enumerate(keyed)}
@@ -136,6 +151,27 @@ def propose_and_finalize(policy_text: str, client: Any) -> Compiled:
     used = {pos for pos, _, _ in keyed}
     warnings = [f"Not a supported rule, so it was not compiled: \"{s}\"" for j, s in enumerate(sentences) if j not in used]
     try:
-        return finalize(specs, amb_specs, warnings)
+        compiled = finalize(specs, amb_specs, warnings, pack)
     except CompileError as exc:  # invalid model output (bad params / patches), not a real "unsupported"
         raise LLMCompileError(str(exc)) from exc
+    compiled.checks = gate_checks(compiled, model_output=True)
+    return compiled
+
+
+def parse_proposal(raw: Any) -> Proposal:
+    """Validate a proposal that arrived as JSON (for example from a model running on the phone)."""
+    try:
+        if isinstance(raw, str):
+            raw = llm.extract_json(raw)
+        return Proposal.model_validate(raw)
+    except (ValidationError, ValueError) as exc:
+        raise LLMCompileError(f"The proposal did not have the expected shape ({type(exc).__name__}).") from exc
+
+
+def propose_and_finalize(policy_text: str, client: Any, pack: Any = None, model: Optional[str] = None,
+                         timeout: Optional[float] = None) -> Compiled:
+    return finalize_proposal(policy_text, propose(policy_text, client, pack, model, timeout), pack)
+
+
+__all__ = ["SYSTEM_PROMPT", "USER_TEMPLATE", "LLMCompileError", "Proposal", "propose", "finalize_proposal",
+           "parse_proposal", "propose_and_finalize", "SUPPORTED_TEXT"]

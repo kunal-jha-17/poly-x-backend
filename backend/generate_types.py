@@ -52,7 +52,7 @@ def ts_type(tp: Any, use_alias: bool = True) -> str:
 def render() -> str:
     lines = [
         "// GENERATED from backend/models.py by backend/generate_types.py. DO NOT EDIT BY HAND.",
-        "// Contract change process: brief Part C4 (edit models.py, regenerate, bump CONTRACT_VERSION, tell Gaurav).",
+        "// Contract change process: edit models.py, run `python generate_types.py`, bump CONTRACT_VERSION.",
         "",
         f'export declare const CONTRACT_VERSION: "{models.CONTRACT_VERSION}";',
         "",

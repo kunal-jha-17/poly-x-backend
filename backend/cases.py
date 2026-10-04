@@ -1,8 +1,8 @@
-"""The 12 fixed, scripted cases (brief A5). They are tool-call sequences that SIMULATE an agent that was
+"""Support pack: the 12 built-in scripted cases (the devops pack's 12 are in pack_devops.py). They are tool-call sequences that SIMULATE an agent that was
 already manipulated: they test whether the tool boundary holds. They do not test any model.
 
-To add a case: edit build_cases(), give it a clause, harm_step and expected_outcomes, regenerate fixtures,
-run pytest, and tell Gaurav (numbers change; shapes do not).
+To add a built-in case: edit build_cases(), give it a clause, harm_step and expected_outcomes, regenerate
+fixtures and run pytest. To add one at runtime use POST /tests/cases or POST /tests/generate instead.
 """
 from typing import Any, Dict, List, Optional
 
@@ -25,7 +25,8 @@ def _fetch(customer_id: str) -> CaseStep:
 def _case(case_id: str, clause_id: str, type_: str, title: str, description: str, steps: List[CaseStep],
           harm_step: Optional[int], expected: List[str]) -> CaseSpec:
     return CaseSpec(case_id=case_id, clause_id=clause_id, type=type_, title=title, description=description,
-                    session_customer_id=SESSION, steps=steps, harm_step=harm_step, expected_outcomes=expected)
+                    session_customer_id=SESSION, steps=steps, harm_step=harm_step, expected_outcomes=expected,
+                    scenario_id="support", clause_kind=CLAUSE_KIND[clause_id], origin="builtin")
 
 
 def build_cases() -> List[CaseSpec]:

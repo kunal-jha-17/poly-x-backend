@@ -1,0 +1,113 @@
+{
+  "policy_id": "pol_002",
+  "policy_version": 1,
+  "approved_at": "2026-10-04T15:16:25.481Z",
+  "policy_text": "Deploys to production require human approval.\nNo more than 3 deploys to the same environment in any rolling 24-hour period.\nNever print or reveal secret values.\nNever run destructive shell commands.",
+  "compiled_by": "fixture",
+  "clauses": [
+    {
+      "clause_id": "C1",
+      "source_sentence": "Deploys to production require human approval.",
+      "kind": "env_approval",
+      "action": "escalate",
+      "params": {
+        "field": "environment",
+        "operator": "in",
+        "environments": [
+          "production"
+        ]
+      }
+    },
+    {
+      "clause_id": "C2",
+      "source_sentence": "No more than 3 deploys to the same environment in any rolling 24-hour period.",
+      "kind": "deploy_rate_limit",
+      "action": "deny",
+      "params": {
+        "field": "deploy_count",
+        "max_count": 3,
+        "window_hours": 24,
+        "window_type": "rolling",
+        "scope": "environment"
+      }
+    },
+    {
+      "clause_id": "C3",
+      "source_sentence": "Never print or reveal secret values.",
+      "kind": "secret_protection",
+      "action": "deny",
+      "params": {
+        "subject": "secret_values"
+      }
+    },
+    {
+      "clause_id": "C4",
+      "source_sentence": "Never run destructive shell commands.",
+      "kind": "command_block",
+      "action": "deny",
+      "params": {
+        "category": "destructive",
+        "mode": "denylist"
+      }
+    }
+  ],
+  "answers": [
+    {
+      "ambiguity_id": "A1",
+      "option_id": "A1_O1"
+    },
+    {
+      "ambiguity_id": "A2",
+      "option_id": "A2_O1"
+    },
+    {
+      "ambiguity_id": "A3",
+      "option_id": "A3_O1"
+    }
+  ],
+  "diff": [
+    {
+      "clause_id": "C1",
+      "change": "added",
+      "source_sentence": "Deploys to production require human approval.",
+      "detail": null
+    },
+    {
+      "clause_id": "C2",
+      "change": "added",
+      "source_sentence": "No more than 3 deploys to the same environment in any rolling 24-hour period.",
+      "detail": null
+    },
+    {
+      "clause_id": "C3",
+      "change": "added",
+      "source_sentence": "Never print or reveal secret values.",
+      "detail": null
+    },
+    {
+      "clause_id": "C4",
+      "change": "added",
+      "source_sentence": "Never run destructive shell commands.",
+      "detail": null
+    }
+  ],
+  "scenario_id": "devops",
+  "compiler": {
+    "provider": "rules",
+    "model": null,
+    "location": "server",
+    "label": "Rule parser (deterministic, no model)",
+    "latency_ms": 2.1,
+    "attempts": [
+      {
+        "provider": "rules",
+        "model": null,
+        "ok": true,
+        "latency_ms": 2.1,
+        "error": null
+      }
+    ]
+  },
+  "approved_by": "reviewer",
+  "note": null
+}
